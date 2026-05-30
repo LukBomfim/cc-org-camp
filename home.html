@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <header class="cabecalho-topo">
+        <div class="logo-sistema">
+            <h2>CC-ORG-CAMP</h2>
+        </div>
+        <nav class="navegacao-usuario">
+            <span>Olá, <span id="nome-usuario-logado"></span></span>
+            <a href="index.html" class="botao-sair">Sair</a>
+        </nav>
+    </header>
+
+    <main class="conteudo-painel">
+        <section class="barra-acoes">
+            <h1 class="titulo-secao">Seus Campeonatos</h1>
+            <a href="criar-campeonato.html" class="botao-criar-campeonato">Criar novo campeonato</a>
+        </section>
+
+        <div class="divisor-listas">
+            <section class="bloco-campeonatos">
+                <h2 class="campeonato-andamento">Em andamento</h2>
+
+                <div id="lista-em-adamento" class="grade-campeonatos">
+                </div>
+            </section>
+
+            <section class="bloco-campeonatos">
+                <h2 class="campeonato-concluido">Concluidos</h2>
+
+                <div id="lista-concluidos" class="grade-campeonatos">
+                    </div>
+            </section>
+            
+        </div>
+
+    </main>
+    
+</body>
+</html>

@@ -1,7 +1,7 @@
 const path = require('path');
 const sqlite3 = require('sqlite3').verbose();
 
-// O arquivo do banco será criado automaticamente dentro da pasta backend
+
 const caminhoBanco = path.join(__dirname, '..', 'campeonatos.sqlite');
 
 const db = new sqlite3.Database(caminhoBanco, (erro) => {

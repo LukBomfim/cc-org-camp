@@ -60,44 +60,5 @@
             </form>
         </section>
     </main>
-
-    <script>
-        const API = 'http://localhost:3000'
-
-        document.getElementById('formulario-criacao').addEventListener('submit', async (e) => {
-            e.preventDefault()
-            const btn     = document.getElementById('btn-criar')
-            const msgErro = document.getElementById('msg-erro')
-            const msgOk   = document.getElementById('msg-sucesso')
-            msgErro.style.display = msgOk.style.display = 'none'
-            btn.disabled = true
-            btn.textContent = 'Criando...'
-
-            try {
-                const res = await fetch(`${API}/torneios`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        nome:       document.getElementById('nome-campeonato').value.trim(),
-                        tipo:       document.getElementById('tipo-evento').value,
-                        modalidade: document.getElementById('modalidade').value.trim(),
-                        categoria:  document.getElementById('categoria').value.trim(),
-                    })
-                })
-                const data = await res.json()
-                if (!res.ok) throw new Error(data.erro || 'Erro desconhecido')
-                msgOk.textContent   = `Campeonato "${data.nome}" criado! Redirecionando...`
-                msgOk.style.display = 'block'
-                setTimeout(() => {
-                    window.location.href = `inserir-competidores.html?torneio_id=${data.id}&nome=${encodeURIComponent(data.nome)}`
-                }, 1200)
-            } catch (err) {
-                msgErro.textContent   = err.message
-                msgErro.style.display = 'block'
-                btn.disabled    = false
-                btn.textContent = 'Criar Campeonato'
-            }
-        })
-    </script>
 </body>
 </html>

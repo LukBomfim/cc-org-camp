@@ -40,43 +40,5 @@
             </section>
         </div>
     </main>
-
-    <script>
-        const API = 'http://localhost:3000'
-
-        function renderCard(t) {
-            return `
-                <a href="inserir-competidores.html?torneio_id=${t.id}&nome=${encodeURIComponent(t.nome)}"
-                   class="card-campeonato">
-                    <div>
-                        <p class="nome-campeonato">${t.nome}</p>
-                        <p class="meta-campeonato">${t.participantes} participantes · ${t.tipo}</p>
-                    </div>
-                    <span class="badge-status ${t.status === 'complete' ? 'badge-concluido' : 'badge-ativo'}">
-                        ${t.status === 'complete' ? 'Concluído' : 'Em andamento'}
-                    </span>
-                </a>`
-        }
-
-        async function carregarTorneios() {
-            const elAnd  = document.getElementById('lista-em-andamento')
-            const elConc = document.getElementById('lista-concluidos')
-            const elErro = document.getElementById('mensagem-erro')
-            try {
-                const res = await fetch(`${API}/torneios`)
-                if (!res.ok) throw new Error()
-                const { em_andamento, concluidos } = await res.json()
-                elAnd.innerHTML  = em_andamento.length ? em_andamento.map(renderCard).join('') : '<div class="estado-vazio">Nenhum campeonato em andamento.</div>'
-                elConc.innerHTML = concluidos.length   ? concluidos.map(renderCard).join('')   : '<div class="estado-vazio">Nenhum campeonato concluído ainda.</div>'
-            } catch {
-                elErro.textContent  = 'Não foi possível conectar ao servidor. Verifique se o backend está rodando.'
-                elErro.style.display = 'block'
-                elAnd.innerHTML  = '<div class="estado-vazio">—</div>'
-                elConc.innerHTML = '<div class="estado-vazio">—</div>'
-            }
-        }
-
-        carregarTorneios()
-    </script>
 </body>
 </html>

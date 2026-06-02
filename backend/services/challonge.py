@@ -11,11 +11,18 @@ def challonge(method, path, **kwargs):
     url = f'{URL}{path}.json'
     params = kwargs.get('params', {})
     params['api_key'] = CHALLONGE_API_KEY
+
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36'
+    }
     
-    return requests.request(method, url, params=params, json=kwargs.get('json'))
+    return requests.request(
+        method, 
+        url, 
+        params=params, 
+        json=kwargs.get('json'), 
+        headers=headers
+        )
 
 def listar_torneios():
-    resposta = challonge('GET', '/tournaments')
-    print(resposta.status_code)
-    print(resposta.text)
-    return resposta
+    return challonge('GET', '/tournaments')

@@ -1,3 +1,6 @@
+from dotenv import load_dotenv
+load_dotenv()
+
 from flask import Flask, render_template, jsonify, request, session, redirect
 import backend.services.database as db
 import backend.services.challonge as api
@@ -69,7 +72,7 @@ def cadastro():
 
     return render_template('cadastro.html')
 
-@app.route('/torneios')
+@app.route('/torneios', methods=['GET'])
 def listar_torneios():
     try:
         torneios = api.listar_torneios()

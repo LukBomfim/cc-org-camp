@@ -105,5 +105,3 @@ def novo_campeonato(userId, dados):
             print(f"Erro ao criar campeonato: {e}")
             return False
 
-if __name__ == "__main__":
-    criarDB()

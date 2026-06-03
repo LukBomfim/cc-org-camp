@@ -75,12 +75,13 @@ def cadastro():
 @app.route('/torneios', methods=['GET'])
 def listar_torneios():
     try:
-        torneios = api.listar_torneios()
-        return jsonify(torneios.json()), torneios.status_code
+        resposta = api.listar_torneios()
+        return jsonify(resposta.json()), resposta.status_code
     
     except Exception as e:
         print(f"Erro ao listar torneios: {e}")
-        return jsonify({'success': False, 'message': 'Erro ao listar torneios'}), 500
+        return jsonify({'success': False, 'message': 'Erro ao listar campeonato'}), 500
+
 
 @app.route('/home')
 def home():
@@ -99,8 +100,12 @@ def criar_campeonato():
             dados = request.get_json()
             userId = session.get('user_id')
 
+            torneio = api.criar_torneio(dados)
+            url_api = torneio.json()['tournament']['url']
 
+            db.novo_campeonato(userId, url_api, dados.get('qtd-competidores'))
 
+            return jsonify({'success': True, 'url':url_api}), 201
 
         except Exception as e:
             print(f"Erro ao processar criação de campeonato: {e}")

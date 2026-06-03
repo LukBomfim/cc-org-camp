@@ -33,6 +33,7 @@ def tabelaUsuarios():
         except Exception as e:
             print(f"Erro ao criar tabela 'usuarios': {e}")
 
+
 def tabelaCampeonatos():
     with conectarDB() as conn:
         try: 
@@ -41,6 +42,7 @@ def tabelaCampeonatos():
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     url_api TEXT,
                     user_id INTEGER,
+                    qtd_participantes INTEGER,
                     FOREIGN KEY (user_id) REFERENCES usuarios(id)
                 )
             ''')
@@ -48,9 +50,11 @@ def tabelaCampeonatos():
         except Exception as e:
             print(f"Erro ao criar tabela 'campeonatos': {e}")
 
+
 def gerarTabelas():
     tabelaUsuarios()
     tabelaCampeonatos()
+
 
 def usuarioExiste(email):
     with conectarDB() as conn:
@@ -64,6 +68,7 @@ def usuarioExiste(email):
         except Exception as e:
             print(f"Erro ao verificar existência do usuário: {e}")
             return False
+
 
 def cadastrar_usuario(nome, email, senha):
     with conectarDB() as conn:
@@ -95,13 +100,16 @@ def verificar_usuario(email, senha):
             return None
 
 
-def novo_campeonato(userId, dados):
+def novo_campeonato(userId, url, qtd):
     with conectarDB() as conn:
         try:
-            
+            conn.execute(
+                'INSERT INTO campeonatos (url_api, user_id, qtd_participantes) VALUES (?, ?, ?)',
+                (url, userId, qtd)
+            )
+            conn.commit()
             return True
         
         except Exception as e:
             print(f"Erro ao criar campeonato: {e}")
             return False
-

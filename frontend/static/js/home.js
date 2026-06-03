@@ -21,9 +21,13 @@ async function carregarTorneios(){
 
         if (emAndamento.length > 0){
             containerEmAndamento.innerHTML = ''
+        } else {
+            containerEmAndamento.textContent = 'Sem campeonatos concluídos'
         }
         if (concluidos.length > 0){
             containerConcluidos.innerHTML = ''
+        } else {
+            containerConcluidos.textContent = 'Sem campeonatos em andamento'
         }
 
         

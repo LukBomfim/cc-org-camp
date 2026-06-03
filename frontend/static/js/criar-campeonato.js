@@ -7,10 +7,17 @@ document.getElementById('formulario-criacao').addEventListener('submit', async f
     const categoria = document.getElementById('categoria').value
     const qtdCompetidores = document.getElementById('qtd-competidores').value
 
+    const nomeCompleto = `${nome} - ${modalidade} - ${categoria}`
+
     const resposta = await fetch('/criar-campeonato', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ tipo, nome, modalidade, categoria, qtdCompetidores })
     })
+
+    const data = await resposta.json()
+    if (resposta.ok) {
+        window.location.href = '/home'
+    }
 
 })

@@ -26,3 +26,6 @@ def challonge(method, path, **kwargs):
 
 def listar_torneios():
     return challonge('GET', '/tournaments')
+
+def criar_torneio(dados):
+    return challonge('POST', '/tournaments', json={'tournament': dados})

@@ -32,7 +32,7 @@ async function carregarTorneios(){
         
         emAndamento.forEach(torneio => {
             containerEmAndamento.innerHTML += `
-                <button onclick="verificarParticipantes(${JSON.stringify(torneio)})">
+                <button onclick="verificarParticipantes('${torneio.tournament.url}')">
                     <h3>${torneio.tournament.id}. ${torneio.tournament.name}</h3>
                 </button>
             `
@@ -52,16 +52,18 @@ async function carregarTorneios(){
     }
 }
 
-async function verificarParticipantes(torneio){
+async function verificarParticipantes(url){
+    const listaTorneios = JSON.parse(sessionStorage.getItem('torneios'))
+    const torneio = listaTorneios.find(t => t.tournament.url === url)
 
-    torneio = JSON.parse(torneio)
-    url = torneio.tournament.url
-
-    resposta = await fetch(`/torneios/${url}/verif`, {
+    const resposta = await fetch(`/torneios/${url}/verif`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(torneio)
     })
+
+    const data = await resposta.json()
+    window.location.href = data.redirect
 
 }
 

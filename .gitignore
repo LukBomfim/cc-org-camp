@@ -6,3 +6,4 @@ npm-debug.log*
 Thumbs.db
 *.sqlite
 *.db
+__pycache__

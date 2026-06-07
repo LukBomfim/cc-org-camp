@@ -93,7 +93,6 @@ def criar_campeonato():
             dados = request.get_json()
             userId = session.get('user_id')
             url_api = dados.get('url')
-            qtdParticipantes = int(dados.get('qtdCompetidores'))
 
             api.criar_torneio({
                 'name': dados.get('name'),
@@ -101,7 +100,7 @@ def criar_campeonato():
                 'tournament_type': 'single elimination'
             })
 
-            db.novo_campeonato(userId, url_api, qtdParticipantes)
+            db.novo_campeonato(userId, url_api)
 
             return jsonify({'success': True, 'url':url_api}), 201
 
@@ -138,7 +137,7 @@ def get_challonge():
         return jsonify({'success': False, 'message': 'Erro ao fazer a requisição na api'}), 500
 
 
-@app.route('/torneios/<torneioUrl>/verif')
+@app.route('/torneios/<torneioUrl>/verif', methods=['GET', 'POST'])
 def verificar_participantes(torneioUrl):
     if 'user_id' not in session:
         return redirect('/')
@@ -151,10 +150,12 @@ def verificar_participantes(torneioUrl):
     
     try:
         torneio = request.get_json()
-        print(torneio)
+        qtdPart = len(torneio['tournament']['participants'])
 
-
-
+        if qtdPart == 0:
+            return jsonify({'redirect': f'torneios/{torneioUrl}/add-participante'}), 200
+        
+        return jsonify({'redirect': f'/torneios/{torneioUrl}'}), 200
 
 
     except Exception as e:

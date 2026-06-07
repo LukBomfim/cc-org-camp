@@ -42,7 +42,6 @@ def tabelaCampeonatos():
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     url_api TEXT,
                     user_id INTEGER,
-                    qtd_participantes INTEGER,
                     FOREIGN KEY (user_id) REFERENCES usuarios(id)
                 )
             ''')
@@ -100,12 +99,12 @@ def verificar_usuario(email, senha):
             return None
 
 
-def novo_campeonato(userId, url, qtd):
+def novo_campeonato(userId, url):
     with conectarDB() as conn:
         try:
             conn.execute(
-                'INSERT INTO campeonatos (url_api, user_id, qtd_participantes) VALUES (?, ?, ?)',
-                (url, userId, qtd)
+                'INSERT INTO campeonatos (url_api, user_id) VALUES (?, ?)',
+                (url, userId)
             )
             conn.commit()
             return True

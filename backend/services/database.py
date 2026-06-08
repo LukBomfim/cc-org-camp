@@ -1,12 +1,14 @@
-import sqlite3
+import psycopg
+import os
+from psycopg.rows import dict_row
 
-DB_NAME = 'cc_org_camp.db'
+DATABASE_URL = os.getenv('DATABASE_URL')
+
 
 
 def conectarDB():
     try:
-        conn = sqlite3.connect(DB_NAME)
-        conn.row_factory = sqlite3.Row
+        conn = psycopg.connect(DATABASE_URL, row_factory=dict_row)
         return conn
     except Exception as e:
         print(f"Erro ao conectar ao banco de dados: {e}")
@@ -15,7 +17,6 @@ def conectarDB():
 
 def criarDB():
     gerarTabelas()
-    print(f"Banco de dados '{DB_NAME}' pronto.")
 
 
 def tabelaUsuarios():
@@ -23,7 +24,7 @@ def tabelaUsuarios():
         try:
             conn.execute('''
                 CREATE TABLE IF NOT EXISTS usuarios (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    id SERIAL PRIMARY KEY,
                     nome TEXT NOT NULL,
                     email TEXT UNIQUE NOT NULL,
                     senha TEXT NOT NULL
@@ -39,7 +40,7 @@ def tabelaCampeonatos():
         try: 
             conn.execute('''
                 CREATE TABLE IF NOT EXISTS campeonatos (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    id SERIAL PRIMARY KEY,
                     url_api TEXT,
                     user_id INTEGER,
                     FOREIGN KEY (user_id) REFERENCES usuarios(id)
@@ -59,7 +60,7 @@ def usuarioExiste(email):
     with conectarDB() as conn:
         try:
             cursor = conn.execute(
-                'SELECT * FROM usuarios WHERE email = ?',
+                'SELECT * FROM usuarios WHERE email = %s',
                 (email,)
             )
             return cursor.fetchone() is not None
@@ -73,12 +74,12 @@ def cadastrar_usuario(nome, email, senha):
     with conectarDB() as conn:
         try:
             conn.execute(
-                'INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)',
+                'INSERT INTO usuarios (nome, email, senha) VALUES (%s, %s, %s)',
                 (nome, email, senha)
             )
             conn.commit()
             return True
-        except sqlite3.IntegrityError:
+        except psycopg.errors.UniqueViolation:
             print(f"Erro: O email '{email}' já está cadastrado.")
             return False
         except Exception as e:
@@ -90,7 +91,7 @@ def verificar_usuario(email, senha):
     with conectarDB() as conn:
         try:
             cursor = conn.execute(
-                'SELECT * FROM usuarios WHERE email = ? AND senha = ?',
+                'SELECT * FROM usuarios WHERE email = %s AND senha = %s',
                 (email, senha)
             )
             return cursor.fetchone()
@@ -103,7 +104,7 @@ def novo_campeonato(userId, url):
     with conectarDB() as conn:
         try:
             conn.execute(
-                'INSERT INTO campeonatos (url_api, user_id) VALUES (?, ?)',
+                'INSERT INTO campeonatos (url_api, user_id) VALUES (%s, %s)',
                 (url, userId)
             )
             conn.commit()
@@ -117,7 +118,7 @@ def filtrar_campeonatos(userId):
     with conectarDB() as conn:
         try:
             cursor = conn.execute(
-                'SELECT url_api FROM campeonatos WHERE user_id = ?',
+                'SELECT url_api FROM campeonatos WHERE user_id = %s',
                 (userId,)
             )
             return [row['url_api'] for row in cursor.fetchall()]

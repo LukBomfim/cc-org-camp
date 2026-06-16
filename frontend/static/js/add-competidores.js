@@ -3,10 +3,26 @@ const url = window.location.pathname.split('/')[2]
 const torneios = JSON.parse(sessionStorage.getItem('torneios'))
 const torneio = torneios.find(t => t.tournament.url === url)
 const lista = document.getElementById('inserir-competidores-container')
+const qtdMax = torneio.tournament.signup_cap || 64
 
 let competidores = []
 
 h1.innerText = torneio.tournament.name
+
+function atualizarContador() {
+    const contador = document.getElementById('contador-competidores')
+    const botaoAdicionar = document.getElementById('btn-adicionar-competidor')
+
+    contador.textContent = `Competidores adicionados: ${competidores.length} / ${qtdMax}`
+
+    if (competidores.length >= qtdMax) {
+        botaoAdicionar.disabled = true
+        botaoAdicionar.textContent = 'Limite atingido'
+    } else {
+        botaoAdicionar.disabled = false
+        botaoAdicionar.textContent = 'Adicionar'
+    }
+}
 
 function renderizarLista() {
     lista.innerHTML = ''
@@ -20,6 +36,8 @@ function renderizarLista() {
             </div>
         `
     })
+
+    atualizarContador()
 }
 
 function mostrarErro(mensagem) {
@@ -46,6 +64,12 @@ function addCompetidores() {
 
     if (!nome) {
         mostrarErro('Digite o nome do competidor antes de adicionar.')
+        inputNome.focus()
+        return
+    }
+
+    if (competidores.length >= qtdMax) {
+        mostrarErro(`Limite máximo de ${qtdMax} competidores atingido.`)
         inputNome.focus()
         return
     }
@@ -119,3 +143,5 @@ document.getElementById('formulario-competidores').addEventListener('submit', as
         mostrarErro(data.message)
     }
 })
+
+atualizarContador()
